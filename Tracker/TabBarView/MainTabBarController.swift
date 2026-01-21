@@ -30,13 +30,14 @@ class MainTabBarController: UITabBarController {
             selectedImage: nil
         )
         
-        viewControllers = [trackerViewController, statisticViewController]
+        let trackerNav = UINavigationController(rootViewController: trackerViewController)
+        
+        viewControllers = [trackerNav, statisticViewController]
     }
     
     private func setupTabBar() {
         let appearance = UITabBarAppearance()
         appearance.configureWithOpaqueBackground()
-        appearance.backgroundColor = .brown
         
         tabBar.standardAppearance = appearance
         tabBar.scrollEdgeAppearance = appearance

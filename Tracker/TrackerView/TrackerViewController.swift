@@ -8,6 +8,7 @@
 import UIKit
 
 final class TrackerViewController: UIViewController {
+    
     private let addTrackerButton = UIButton()
     private let noTrackersImageView = UIImageView()
     private let noTrackersQuestionLabel: UILabel = {
@@ -17,7 +18,8 @@ final class TrackerViewController: UIViewController {
         return label
     }()
     
-    private let trackerList = Array<Any>()
+    var categories: [TrackerCategory] = []
+    var completedTrackers: [TrackerRecord] = []
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -29,16 +31,34 @@ final class TrackerViewController: UIViewController {
         navigationItem.largeTitleDisplayMode = .always
         
         navigationItem.leftBarButtonItem = UIBarButtonItem(customView: makeAddButton())
-    
+        
         setupProfileImage(for: noTrackersImageView)
         
-        if trackerList.isEmpty {
-            setupLabel(noTrackersQuestionLabel)
-        }
+        setupNoTrackersLabel()
     }
     
     private func addTrackerTapped() {
         print("Нажали +")
+        
+        let newTracker = Tracker(
+            id: UUID(),
+            name: "Выпить воды",
+            color: TrackerColor.blue,
+            emoji: "",
+            schedule: [.friday, .saturday, .sunday]
+        )
+        
+        let newCategory = TrackerCategory(heading: "Жизнь", trackers: [newTracker])
+        
+        categories = [newCategory]
+        
+        let record = TrackerRecord(trackerId: newTracker.id, date: Date())
+            
+        completedTrackers.append(record)
+        
+        print("Добавлена категория: ", categories)
+        
+        print("Отметка выполнения: ", completedTrackers)
     }
     
     private func makeAddButton() -> UIButton {
@@ -65,7 +85,7 @@ final class TrackerViewController: UIViewController {
         ])
     }
     
-    private func setupLabel(_ label: UILabel) {
+    private func setupNoTrackersLabel() {
         noTrackersQuestionLabel.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(noTrackersQuestionLabel)
         

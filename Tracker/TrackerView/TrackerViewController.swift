@@ -17,6 +17,8 @@ final class TrackerViewController: UIViewController {
         label.textAlignment = .center
         return label
     }()
+    let datePicker = UIDatePicker()
+    let searchController = UISearchController()
     
     var categories: [TrackerCategory] = []
     var completedTrackers: [TrackerRecord] = []
@@ -32,9 +34,23 @@ final class TrackerViewController: UIViewController {
         
         navigationItem.leftBarButtonItem = UIBarButtonItem(customView: makeAddButton())
         
+        datePicker.datePickerMode = .date
+        navigationItem.rightBarButtonItem = UIBarButtonItem(customView: datePicker)
+        datePicker.preferredDatePickerStyle = .compact
+        datePicker.locale = Locale(identifier: "ru_RU")
+        datePicker.addTarget(self, action: #selector(datePickerValueChanged(_:)), for: .valueChanged)
+        
         setupProfileImage(for: noTrackersImageView)
         
         setupNoTrackersLabel()
+    }
+    
+    @objc func datePickerValueChanged(_ sender: UIDatePicker) {
+        let selectedDate = sender.date
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "dd.MM.yyyy" // Формат даты
+        let formattedDate = dateFormatter.string(from: selectedDate)
+        print("Выбранная дата: \(formattedDate)")
     }
     
     private func addTrackerTapped() {

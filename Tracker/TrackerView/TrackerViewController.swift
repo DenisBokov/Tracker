@@ -11,18 +11,34 @@ final class TrackerViewController: UIViewController {
     
     private let addTrackerButton = UIButton()
     private let noTrackersImageView = UIImageView()
+    
     private let noTrackersQuestionLabel: UILabel = {
         let label = UILabel()
         label.text = "Что будем отслеживать?"
         label.textAlignment = .center
         return label
     }()
-    let datePicker = UIDatePicker()
-    let searchController = UISearchController()
+    
+    private let datePicker = UIDatePicker()
+    
+    private let searchController = UISearchController(searchResultsController: nil)
+    
+    private lazy var collectionView: UICollectionView = {
+        let layout = UICollectionViewFlowLayout()
+        layout.sectionInset = UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16)
+        layout.minimumInteritemSpacing = 8
+        layout.minimumLineSpacing = 16
+        
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collectionView.backgroundColor = .clear
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
+        
+        return collectionView
+    }()
     
     var categories: [TrackerCategory] = []
     var completedTrackers: [TrackerRecord] = []
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -40,6 +56,24 @@ final class TrackerViewController: UIViewController {
         datePicker.locale = Locale(identifier: "ru_RU")
         datePicker.addTarget(self, action: #selector(datePickerValueChanged(_:)), for: .valueChanged)
         
+        setupSearchController()
+        
+        setupCollectionViewConstraints()
+        
+        collectionView.register(
+            TrackerCell.self,
+            forCellWithReuseIdentifier: TrackerCell.reuseIdentifier
+        )
+        
+        collectionView.register(
+            TrackerSectionHeader.self,
+            forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
+            withReuseIdentifier: TrackerSectionHeader.reuseIdentifier
+        )
+        
+        collectionView.dataSource = self
+        collectionView.delegate = self
+        
         setupProfileImage(for: noTrackersImageView)
         
         setupNoTrackersLabel()
@@ -48,33 +82,59 @@ final class TrackerViewController: UIViewController {
     @objc func datePickerValueChanged(_ sender: UIDatePicker) {
         let selectedDate = sender.date
         let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "dd.MM.yyyy" // Формат даты
+        dateFormatter.dateFormat = "dd.MM.yyyy"
         let formattedDate = dateFormatter.string(from: selectedDate)
         print("Выбранная дата: \(formattedDate)")
     }
     
+    private func setupCollectionViewConstraints() {
+        view.addSubview(collectionView)
+        
+        NSLayoutConstraint.activate([
+            collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        ])
+    }
+    
+    private func setupSearchController() {
+        searchController.obscuresBackgroundDuringPresentation = false
+        searchController.searchBar.placeholder = "Поиск"
+        
+        navigationItem.searchController = searchController
+        navigationItem.hidesSearchBarWhenScrolling = false
+        
+        definesPresentationContext = true
+    }
+    
     private func addTrackerTapped() {
         print("Нажали +")
-        
-        let newTracker = Tracker(
-            id: UUID(),
-            name: "Выпить воды",
-            color: TrackerColor.blue,
-            emoji: "",
-            schedule: [.friday, .saturday, .sunday]
-        )
-        
-        let newCategory = TrackerCategory(heading: "Жизнь", trackers: [newTracker])
-        
-        categories = [newCategory]
-        
-        let record = TrackerRecord(trackerId: newTracker.id, date: Date())
             
-        completedTrackers.append(record)
+            let newTracker = Tracker(
+                id: UUID(),
+                name: "Выпить воды",
+                color: .blue,
+                emoji: "💧",
+                schedule: [.friday, .saturday, .sunday]
+            )
+            
+            let categoryName = "Жизнь"
+            
+        if let index = categories.firstIndex(where: { $0.heading == categoryName }) {
+            categories[index].trackers.append(newTracker)
+        } else {
+            let newCategory = TrackerCategory(heading: categoryName, trackers: [newTracker])
+            categories.append(newCategory)
+        }
+            
+            let record = TrackerRecord(trackerId: newTracker.id, date: Date())
+            completedTrackers.append(record)
+            
+            noTrackersImageView.isHidden = true
+            noTrackersQuestionLabel.isHidden = true
         
-        print("Добавлена категория: ", categories)
-        
-        print("Отметка выполнения: ", completedTrackers)
+        collectionView.reloadData()
     }
     
     private func makeAddButton() -> UIButton {
@@ -83,7 +143,7 @@ final class TrackerViewController: UIViewController {
         addTrackerButton.addAction(UIAction { [weak self] _ in
             self?.addTrackerTapped()
         }, for: .touchUpInside)
-
+        
         return addTrackerButton
     }
     
@@ -110,5 +170,75 @@ final class TrackerViewController: UIViewController {
             noTrackersQuestionLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
             noTrackersQuestionLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16)
         ])
+    }
+}
+
+extension TrackerViewController: UICollectionViewDataSource {
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        categories.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        categories[section].trackers.count
+    }
+    
+    func collectionView(
+        _ collectionView: UICollectionView,
+        viewForSupplementaryElementOfKind kind: String,
+        at indexPath: IndexPath
+    ) -> UICollectionReusableView {
+        
+        guard let headerView = collectionView.dequeueReusableSupplementaryView(
+            ofKind: kind,
+            withReuseIdentifier: TrackerSectionHeader.reuseIdentifier,
+            for: indexPath) as? TrackerSectionHeader
+        else {
+            return UICollectionReusableView()
+        }
+        
+        headerView.configure(withTitle: categories[indexPath.section].heading)
+        
+        return headerView
+    }
+    
+    func collectionView(
+        _ collectionView: UICollectionView,
+        cellForItemAt indexPath: IndexPath
+    ) -> UICollectionViewCell {
+        
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TrackerCell.reuseIdentifier, for: indexPath) as? TrackerCell else {
+            return UICollectionViewCell()
+        }
+        
+        let tracker = categories[indexPath.section].trackers[indexPath.item]
+        cell.configure(with: tracker)
+        
+        return cell
+    }
+}
+
+extension TrackerViewController: UICollectionViewDelegate {
+    
+}
+
+extension TrackerViewController: UICollectionViewDelegateFlowLayout {
+    
+    func collectionView(
+        _ collectionView: UICollectionView,
+        layout collectionViewLayout: UICollectionViewLayout,
+        sizeForItemAt indexPath: IndexPath
+    ) -> CGSize {
+        
+        let width = (collectionView.bounds.width - 16 * 2 - 8) / 2
+        return CGSize(width: width, height: 148)
+    }
+    
+    func collectionView(
+        _ collectionView: UICollectionView,
+        layout collectionViewLayout: UICollectionViewLayout,
+        referenceSizeForHeaderInSection section: Int
+    ) -> CGSize {
+        
+        CGSize(width: collectionView.bounds.width, height: 40)
     }
 }

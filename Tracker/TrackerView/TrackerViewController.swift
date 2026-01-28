@@ -110,31 +110,35 @@ final class TrackerViewController: UIViewController {
     
     private func addTrackerTapped() {
         print("Нажали +")
-            
-            let newTracker = Tracker(
-                id: UUID(),
-                name: "Выпить воды",
-                color: .blue,
-                emoji: "💧",
-                schedule: [.friday, .saturday, .sunday]
-            )
-            
-            let categoryName = "Жизнь"
-            
+        
+        let newTracker = Tracker(
+            id: UUID(),
+            name: "Полить растения",
+            color: .green,
+            emoji: "😪",
+            schedule: [.friday, .saturday, .sunday]
+        )
+        
+        let categoryName = "Жизнь"
+        
         if let index = categories.firstIndex(where: { $0.heading == categoryName }) {
             categories[index].trackers.append(newTracker)
         } else {
             let newCategory = TrackerCategory(heading: categoryName, trackers: [newTracker])
             categories.append(newCategory)
         }
-            
-            let record = TrackerRecord(trackerId: newTracker.id, date: Date())
-            completedTrackers.append(record)
-            
-            noTrackersImageView.isHidden = true
-            noTrackersQuestionLabel.isHidden = true
+        
+        let record = TrackerRecord(trackerId: newTracker.id, date: Date())
+        completedTrackers.append(record)
+        
+        noTrackersImageView.isHidden = true
+        noTrackersQuestionLabel.isHidden = true
         
         collectionView.reloadData()
+    }
+    
+    private func quantityButtonTapped() {
+        
     }
     
     private func makeAddButton() -> UIButton {
@@ -206,7 +210,11 @@ extension TrackerViewController: UICollectionViewDataSource {
         cellForItemAt indexPath: IndexPath
     ) -> UICollectionViewCell {
         
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TrackerCell.reuseIdentifier, for: indexPath) as? TrackerCell else {
+        guard let cell = collectionView.dequeueReusableCell(
+            withReuseIdentifier: TrackerCell.reuseIdentifier,
+            for: indexPath
+        ) as? TrackerCell else {
+            
             return UICollectionViewCell()
         }
         

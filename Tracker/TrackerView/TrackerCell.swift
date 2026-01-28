@@ -7,6 +7,11 @@
 
 import UIKit
 
+enum TrackerFont: String {
+    case medium = "SF-Pro-Display-Medium"
+    case bold = "SF-Pro-Display-Bold"
+}
+
 final class TrackerCell: UICollectionViewCell {
     
     static let reuseIdentifier: String = "TrackerCell"
@@ -14,6 +19,8 @@ final class TrackerCell: UICollectionViewCell {
     private let colorView: UIView = {
         let view = UIView()
         view.layer.cornerRadius = 16
+        view.layer.borderWidth = 1
+        view.layer.borderColor = UIColor(resource: .borderColorView).cgColor
         view.clipsToBounds = true
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
@@ -22,17 +29,48 @@ final class TrackerCell: UICollectionViewCell {
     private let emojiLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 24)
+        label.textColor = .ypWhiteAndGrey
+        label.layer.borderWidth = 4
+        label.layer.borderColor = UIColor(resource: .ypWhiteAndGrey).cgColor
+        label.layer.cornerRadius = 12
+        label.layer.masksToBounds = true
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
     private let titleLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 16, weight: .medium)
-        label.textColor = .white
+        label.font = UIFont(name: TrackerFont.medium.rawValue, size: 12)
+        label.textColor = UIColor(resource: .ypWhite)
         label.numberOfLines = 2
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
+    }()
+    
+    private let quantityManagementView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    
+    private let quantityLabel: UILabel = {
+        let label = UILabel()
+        label.font = UIFont(name: TrackerFont.medium.rawValue, size: 12)
+        label.textColor = UIColor(resource: .ypBlack)
+        label.text = "0 дней"
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
+    private let quantityButton: UIButton = {
+        let button = UIButton()
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.backgroundColor = UIColor(resource: .sectionColorGreen)
+        button.setTitle("+", for: .normal)
+        button.setTitleColor(.white, for: .normal)
+        button.layer.cornerRadius = 17
+        button.clipsToBounds = true
+        return button
     }()
     
     override init(frame: CGRect) {
@@ -47,31 +85,42 @@ final class TrackerCell: UICollectionViewCell {
     
     private func setupViews() {
         
-        contentView.layer.cornerRadius = 16
-        contentView.layer.masksToBounds = true
-        
         contentView.addSubview(colorView)
         contentView.addSubview(emojiLabel)
         contentView.addSubview(titleLabel)
+        contentView.addSubview(quantityManagementView)
         
-        colorView.translatesAutoresizingMaskIntoConstraints = false
-        titleLabel.translatesAutoresizingMaskIntoConstraints = false
-        emojiLabel.translatesAutoresizingMaskIntoConstraints = false
+        quantityManagementView.addSubview(quantityLabel)
+        quantityManagementView.addSubview(quantityButton)
         
         NSLayoutConstraint.activate([
             colorView.topAnchor.constraint(equalTo: contentView.topAnchor),
             colorView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             colorView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             colorView.heightAnchor.constraint(equalToConstant: 90),
-
-            emojiLabel.topAnchor.constraint(equalTo: colorView.topAnchor, constant: 8),
-            emojiLabel.leadingAnchor.constraint(equalTo: colorView.leadingAnchor, constant: 8),
-
-            titleLabel.topAnchor.constraint(equalTo: colorView.topAnchor, constant: 44),
+            
+            emojiLabel.topAnchor.constraint(equalTo: colorView.topAnchor, constant: 12),
+            emojiLabel.leadingAnchor.constraint(equalTo: colorView.leadingAnchor, constant: 12),
+            
+            titleLabel.topAnchor.constraint(equalTo: emojiLabel.bottomAnchor, constant: 8),
             titleLabel.leadingAnchor.constraint(equalTo: colorView.leadingAnchor, constant: 12),
             titleLabel.trailingAnchor.constraint(equalTo: colorView.trailingAnchor, constant: -12),
             titleLabel.bottomAnchor.constraint(lessThanOrEqualTo: colorView.bottomAnchor, constant: 12),
-            titleLabel.heightAnchor.constraint(equalToConstant: 34)
+            titleLabel.heightAnchor.constraint(equalToConstant: 34),
+            
+            quantityManagementView.topAnchor.constraint(equalTo: colorView.bottomAnchor),
+            quantityManagementView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            quantityManagementView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            quantityManagementView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+            quantityManagementView.heightAnchor.constraint(equalToConstant: 58),
+            
+            quantityLabel.centerYAnchor.constraint(equalTo: quantityManagementView.centerYAnchor),
+            quantityLabel.leadingAnchor.constraint(equalTo: quantityManagementView.leadingAnchor, constant: 12),
+            
+            quantityButton.centerYAnchor.constraint(equalTo: quantityManagementView.centerYAnchor),
+            quantityButton.trailingAnchor.constraint(equalTo: quantityManagementView.trailingAnchor, constant: -12),
+            quantityButton.widthAnchor.constraint(equalToConstant: 34),
+            quantityButton.heightAnchor.constraint(equalToConstant: 34)
         ])
     }
     
@@ -87,7 +136,7 @@ extension TrackerColor {
         switch self {
         case .red: return .systemRed
         case .blue: return .systemBlue
-        case .green: return .systemGreen
+        case .green: return .sectionColorGreen
         }
     }
 }

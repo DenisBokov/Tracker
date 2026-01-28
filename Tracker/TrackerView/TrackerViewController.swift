@@ -128,9 +128,6 @@ final class TrackerViewController: UIViewController {
             categories.append(newCategory)
         }
         
-        let record = TrackerRecord(trackerId: newTracker.id, date: Date())
-        completedTrackers.append(record)
-        
         noTrackersImageView.isHidden = true
         noTrackersQuestionLabel.isHidden = true
         
@@ -177,7 +174,8 @@ final class TrackerViewController: UIViewController {
     }
 }
 
-extension TrackerViewController: UICollectionViewDataSource {
+extension TrackerViewController: UICollectionViewDataSource, TrackerCellDelegate {
+    
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         categories.count
     }
@@ -219,9 +217,42 @@ extension TrackerViewController: UICollectionViewDataSource {
         }
         
         let tracker = categories[indexPath.section].trackers[indexPath.item]
-        cell.configure(with: tracker)
+        
+        let isComplitedToday = completedTrackers.contains { record in
+            record.trackerId == tracker.id && Calendar.current.isDateInToday(record.date ?? Date())
+        }
+        
+        let completedCount = completedTrackers.filter { record in
+            record.trackerId == tracker.id
+        }.count
+        
+        cell.configure(with: tracker, countDays: completedCount, isCompleted: isComplitedToday)
+        cell.delegate = self
         
         return cell
+    }
+    
+    func trackerCellDidTapQuantityButton(_ cell: TrackerCell) {
+        guard let indexPath = collectionView.indexPath(for: cell) else { return }
+        let tracker = categories[indexPath.section].trackers[indexPath.item]
+        
+        let today = Date()
+        
+        // Нельзя для будущей даты
+        if Calendar.current.compare(today, to: datePicker.date, toGranularity: .day) == .orderedAscending {
+            return
+        }
+        
+        if let index = completedTrackers.firstIndex(where: { $0.trackerId == tracker.id && Calendar.current.isDate($0.date ?? today, inSameDayAs: today) }) {
+            // Уже выполнен сегодня — убрать отметку
+            completedTrackers.remove(at: index)
+        } else {
+            // Добавляем отметку
+            let record = TrackerRecord(trackerId: tracker.id, date: today)
+            completedTrackers.append(record)
+        }
+        
+        collectionView.reloadItems(at: [indexPath])
     }
 }
 

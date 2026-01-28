@@ -7,6 +7,10 @@
 
 import UIKit
 
+protocol TrackerCellDelegate: AnyObject {
+    func trackerCellDidTapQuantityButton(_ cell: TrackerCell)
+}
+
 enum TrackerFont: String {
     case medium = "SF-Pro-Display-Medium"
     case bold = "SF-Pro-Display-Bold"
@@ -15,6 +19,8 @@ enum TrackerFont: String {
 final class TrackerCell: UICollectionViewCell {
     
     static let reuseIdentifier: String = "TrackerCell"
+    
+    weak var delegate: TrackerCellDelegate?
     
     private let colorView: UIView = {
         let view = UIView()
@@ -77,6 +83,7 @@ final class TrackerCell: UICollectionViewCell {
         super.init(frame: frame)
         
         setupViews()
+        
     }
     
     required init?(coder: NSCoder) {
@@ -124,10 +131,27 @@ final class TrackerCell: UICollectionViewCell {
         ])
     }
     
-    func configure(with tracker: Tracker) {
+    func configure(with tracker: Tracker, countDays: Int, isCompleted: Bool) {
         titleLabel.text = tracker.name
         emojiLabel.text = tracker.emoji
         colorView.backgroundColor = tracker.color.uiColor
+        quantityLabel.text = "\(countDays) дней"
+        
+        if isCompleted {
+            quantityButton.setTitle("✓", for: .normal)
+            quantityButton.backgroundColor = .completedCountButton
+            quantityButton.setTitleColor(.ypWhite, for: .normal)
+        } else {
+            quantityButton.setTitle("+", for: .normal)
+            quantityButton.backgroundColor = tracker.color.uiColor
+            quantityButton.setTitleColor(.ypWhite, for: .normal)
+        }
+        
+        quantityButton.addTarget(self, action: #selector(quantityButtonTapped), for: .touchUpInside)
+    }
+    
+    @objc private func quantityButtonTapped() {
+        delegate?.trackerCellDidTapQuantityButton(self)
     }
 }
 

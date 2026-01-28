@@ -12,8 +12,8 @@ protocol TrackerCellDelegate: AnyObject {
 }
 
 enum TrackerFont: String {
-    case medium = "SF-Pro-Display-Medium"
-    case bold = "SF-Pro-Display-Bold"
+    case medium = "SFProDisplay-Medium"
+    case bold = "SFProDisplay-Bold"
 }
 
 final class TrackerCell: UICollectionViewCell {

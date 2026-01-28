@@ -12,7 +12,7 @@ final class TrackerSectionHeader: UICollectionReusableView {
     
     let titleLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 19, weight: .bold)
+        label.font = UIFont(name: TrackerFont.bold.rawValue, size: 19)
         return label
     }()
     

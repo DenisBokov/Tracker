@@ -119,7 +119,7 @@ final class TrackerViewController: UIViewController {
             schedule: [.friday, .saturday, .sunday]
         )
         
-        let categoryName = "Жизнь"
+        let categoryName = "Домашний уют"
         
         if let index = categories.firstIndex(where: { $0.heading == categoryName }) {
             categories[index].trackers.append(newTracker)
@@ -174,7 +174,7 @@ final class TrackerViewController: UIViewController {
     }
 }
 
-extension TrackerViewController: UICollectionViewDataSource, TrackerCellDelegate {
+extension TrackerViewController: UICollectionViewDataSource {
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         categories.count
@@ -231,29 +231,6 @@ extension TrackerViewController: UICollectionViewDataSource, TrackerCellDelegate
         
         return cell
     }
-    
-    func trackerCellDidTapQuantityButton(_ cell: TrackerCell) {
-        guard let indexPath = collectionView.indexPath(for: cell) else { return }
-        let tracker = categories[indexPath.section].trackers[indexPath.item]
-        
-        let today = Date()
-        
-        // Нельзя для будущей даты
-        if Calendar.current.compare(today, to: datePicker.date, toGranularity: .day) == .orderedAscending {
-            return
-        }
-        
-        if let index = completedTrackers.firstIndex(where: { $0.trackerId == tracker.id && Calendar.current.isDate($0.date ?? today, inSameDayAs: today) }) {
-            // Уже выполнен сегодня — убрать отметку
-            completedTrackers.remove(at: index)
-        } else {
-            // Добавляем отметку
-            let record = TrackerRecord(trackerId: tracker.id, date: today)
-            completedTrackers.append(record)
-        }
-        
-        collectionView.reloadItems(at: [indexPath])
-    }
 }
 
 extension TrackerViewController: UICollectionViewDelegate {
@@ -278,6 +255,28 @@ extension TrackerViewController: UICollectionViewDelegateFlowLayout {
         referenceSizeForHeaderInSection section: Int
     ) -> CGSize {
         
-        CGSize(width: collectionView.bounds.width, height: 40)
+        CGSize(width: collectionView.bounds.width, height: 18)
+    }
+}
+
+extension TrackerViewController: TrackerCellDelegate {
+     func trackerCellDidTapQuantityButton(_ cell: TrackerCell) {
+        guard let indexPath = collectionView.indexPath(for: cell) else { return }
+        let tracker = categories[indexPath.section].trackers[indexPath.item]
+        
+        let today = Date()
+        
+        if Calendar.current.compare(today, to: datePicker.date, toGranularity: .day) == .orderedAscending {
+            return
+        }
+        
+        if let index = completedTrackers.firstIndex(where: { $0.trackerId == tracker.id && Calendar.current.isDate($0.date ?? today, inSameDayAs: today) }) {
+            completedTrackers.remove(at: index)
+        } else {
+            let record = TrackerRecord(trackerId: tracker.id, date: today)
+            completedTrackers.append(record)
+        }
+        
+        collectionView.reloadItems(at: [indexPath])
     }
 }

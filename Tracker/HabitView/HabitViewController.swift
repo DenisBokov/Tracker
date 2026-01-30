@@ -134,9 +134,21 @@ class HabitViewController: UIViewController {
             saveButton.heightAnchor.constraint(equalToConstant: 60),
         ])
     }
+    
+    private func openScheduleViewController() {
+        let vc = ScheduleViewController()
+        vc.modalPresentationStyle = .pageSheet
+        
+        if let sheet = vc.sheetPresentationController {
+            sheet.detents = [.large()]
+            sheet.prefersGrabberVisible = true
+        }
+        
+        present(vc, animated: true)
+    }
 }
 
-extension HabitViewController: UITableViewDataSource, UITableViewDelegate {
+extension HabitViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         rows.count
     }
@@ -160,5 +172,18 @@ extension HabitViewController: UITableViewDataSource, UITableViewDelegate {
         }
         
         return cell
+    }
+}
+
+extension HabitViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        switch indexPath.row {
+        case 0:
+            openScheduleViewController()
+        case 1:
+            openScheduleViewController()
+        default:
+            break
+        }
     }
 }

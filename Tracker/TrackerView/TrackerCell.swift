@@ -141,6 +141,7 @@ final class TrackerCell: UICollectionViewCell {
             quantityButton.setTitle("✓", for: .normal)
             quantityButton.backgroundColor = .completedCountButton
             quantityButton.setTitleColor(.ypWhite, for: .normal)
+            quantityLabel.text = "\(countDays) день"
         } else {
             quantityButton.setTitle("+", for: .normal)
             quantityButton.backgroundColor = tracker.color.uiColor

@@ -111,27 +111,38 @@ final class TrackerViewController: UIViewController {
     private func addTrackerTapped() {
         print("Нажали +")
         
-        let newTracker = Tracker(
-            id: UUID(),
-            name: "Полить растения",
-            color: .green,
-            emoji: "😪",
-            schedule: [.friday, .saturday, .sunday]
-        )
+        //        let newTracker = Tracker(
+        //            id: UUID(),
+        //            name: "Полить растения",
+        //            color: .green,
+        //            emoji: "😪",
+        //            schedule: [.friday, .saturday, .sunday]
+        //        )
+        //
+        //        let categoryName = "Домашний уют"
+        //
+        //        if let index = categories.firstIndex(where: { $0.heading == categoryName }) {
+        //            categories[index].trackers.append(newTracker)
+        //        } else {
+        //            let newCategory = TrackerCategory(heading: categoryName, trackers: [newTracker])
+        //            categories.append(newCategory)
+        //        }
+        //
+        //        noTrackersImageView.isHidden = true
+        //        noTrackersQuestionLabel.isHidden = true
+        //
+        //        collectionView.reloadData()
         
-        let categoryName = "Домашний уют"
+        let vc = HabitViewController()
         
-        if let index = categories.firstIndex(where: { $0.heading == categoryName }) {
-            categories[index].trackers.append(newTracker)
-        } else {
-            let newCategory = TrackerCategory(heading: categoryName, trackers: [newTracker])
-            categories.append(newCategory)
+        vc.modalPresentationStyle = .pageSheet
+        
+        if let sheet = vc.sheetPresentationController {
+            sheet.detents = [.large()]
+            sheet.prefersGrabberVisible = true
         }
         
-        noTrackersImageView.isHidden = true
-        noTrackersQuestionLabel.isHidden = true
-        
-        collectionView.reloadData()
+        present(vc, animated: true)
     }
     
     private func quantityButtonTapped() {

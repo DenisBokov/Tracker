@@ -35,7 +35,6 @@ enum Weekday: Int, CaseIterable {
     }
 }
     
-
 protocol ScheduleViewControllerDelegate: AnyObject {
     func didSelectWeekdays(_ days: [Weekday])
 }

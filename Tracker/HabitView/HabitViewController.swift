@@ -74,11 +74,17 @@ class HabitViewController: UIViewController {
         tableView.dataSource = self
         tableView.delegate = self
         
+        cancelButton.addTarget(self, action: #selector(addCancelAction), for: .touchUpInside)
+        
         addTitleLabelOnView()
         addTextFieldOnView()
         addTableViewOnView()
         addCancelButtonOnView()
         addSaveButtonOnView()
+    }
+    
+    @objc func addCancelAction() {
+        dismiss(animated: true, completion: nil)
     }
     
     private func addTitleLabelOnView() {

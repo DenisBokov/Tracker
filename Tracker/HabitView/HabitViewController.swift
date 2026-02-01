@@ -7,11 +7,17 @@
 
 import UIKit
 
+protocol HabitViewControllerDelegate: AnyObject {
+    func didCreateTracker(_ tracker: Tracker, categoryName: String)
+}
+
 class HabitViewController: UIViewController {
 
     private let rows = ["Категория", "Расписание"]
     
     private var selectedWeekdays: [Weekday] = []
+    
+    weak var delegate: HabitViewControllerDelegate?
     
     private let titleLabel: UILabel = {
         let label = UILabel()
@@ -75,6 +81,7 @@ class HabitViewController: UIViewController {
         tableView.delegate = self
         
         cancelButton.addTarget(self, action: #selector(addCancelAction), for: .touchUpInside)
+        saveButton.addTarget(self, action: #selector(saveTapped), for: .touchUpInside)
         
         addTitleLabelOnView()
         addTextFieldOnView()
@@ -82,6 +89,21 @@ class HabitViewController: UIViewController {
         addCancelButtonOnView()
         addSaveButtonOnView()
         updateSaveButtonState()
+    }
+    
+    @objc private func saveTapped() {
+        let schedule = Set(selectedWeekdays.compactMap { WeekdaySchudele(rawValue: $0.rawValue) })
+        
+        let tracker = Tracker(
+            id: UUID(),
+            name: nameTrackerTextField.text ?? "Без названия",
+            color: .green,
+            emoji: "🔥",
+            schedule: schedule
+        )
+
+        delegate?.didCreateTracker(tracker, categoryName: "Моя категория")
+        dismiss(animated: true)
     }
     
     @objc func addCancelAction() {

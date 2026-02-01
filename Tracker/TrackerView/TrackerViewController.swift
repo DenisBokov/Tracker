@@ -37,7 +37,16 @@ final class TrackerViewController: UIViewController {
     }()
     
     var categories: [TrackerCategory] = []
+    private var allCategories: [TrackerCategory] = []
     var completedTrackers: [TrackerRecord] = []
+    
+    private var isFutureDateSelected: Bool {
+        Calendar.current.compare(
+            datePicker.date,
+            to: Date(),
+            toGranularity: .day
+        ) == .orderedDescending
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -77,6 +86,8 @@ final class TrackerViewController: UIViewController {
         setupProfileImage(for: noTrackersImageView)
         
         setupNoTrackersLabel()
+        updatePlaceholderVisibility()
+        addTestData()
     }
     
     @objc func datePickerValueChanged(_ sender: UIDatePicker) {
@@ -84,6 +95,7 @@ final class TrackerViewController: UIViewController {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "dd.MM.yyyy"
         let formattedDate = dateFormatter.string(from: selectedDate)
+        reloadVisibleTrackers()
         print("Выбранная дата: \(formattedDate)")
     }
     
@@ -108,32 +120,30 @@ final class TrackerViewController: UIViewController {
         definesPresentationContext = true
     }
     
+    private func addTestData() {
+        let testTracker = Tracker(
+            id: UUID(),
+            name: "Полить цветы",
+            color: .green,
+            emoji: "🌱",
+            schedule: [.monday, .wednesday, .friday]
+        )
+        
+        let testCategory = TrackerCategory(
+            heading: "Домашний уют",
+            trackers: [testTracker]
+        )
+        
+        allCategories = [testCategory]
+        reloadVisibleTrackers()
+    }
+    
     private func addTrackerTapped() {
         print("Нажали +")
         
-        //        let newTracker = Tracker(
-        //            id: UUID(),
-        //            name: "Полить растения",
-        //            color: .green,
-        //            emoji: "😪",
-        //            schedule: [.friday, .saturday, .sunday]
-        //        )
-        //
-        //        let categoryName = "Домашний уют"
-        //
-        //        if let index = categories.firstIndex(where: { $0.heading == categoryName }) {
-        //            categories[index].trackers.append(newTracker)
-        //        } else {
-        //            let newCategory = TrackerCategory(heading: categoryName, trackers: [newTracker])
-        //            categories.append(newCategory)
-        //        }
-        //
-        //        noTrackersImageView.isHidden = true
-        //        noTrackersQuestionLabel.isHidden = true
-        //
-        //        collectionView.reloadData()
-        
         let vc = HabitViewController()
+        
+        vc.delegate = self
         
         vc.modalPresentationStyle = .pageSheet
         
@@ -157,6 +167,38 @@ final class TrackerViewController: UIViewController {
         }, for: .touchUpInside)
         
         return addTrackerButton
+    }
+    
+    private func reloadVisibleTrackers() {
+        guard !isFutureDateSelected else {
+            categories = []
+            collectionView.reloadData()
+            updatePlaceholderVisibility()
+            return
+        }
+        
+        let selectedWeekday = datePicker.date.weekday
+        
+        categories = allCategories.map { category in
+            let filtered = category.trackers.filter {
+                $0.schedule.contains(selectedWeekday)
+            }
+            return TrackerCategory(
+                heading: category.heading,
+                trackers: filtered
+            )
+        }.filter { !$0.trackers.isEmpty }
+        
+        collectionView.reloadData()
+        updatePlaceholderVisibility()
+    }
+    
+    private func updatePlaceholderVisibility() {
+        let hasTrackers = !categories.isEmpty
+        
+        noTrackersImageView.isHidden = hasTrackers
+        noTrackersQuestionLabel.isHidden = hasTrackers
+        collectionView.isHidden = !hasTrackers
     }
     
     private func setupProfileImage(for imageView: UIImageView) {
@@ -271,7 +313,8 @@ extension TrackerViewController: UICollectionViewDelegateFlowLayout {
 }
 
 extension TrackerViewController: TrackerCellDelegate {
-     func trackerCellDidTapQuantityButton(_ cell: TrackerCell) {
+    
+    func trackerCellDidTapQuantityButton(_ cell: TrackerCell) {
         guard let indexPath = collectionView.indexPath(for: cell) else { return }
         let tracker = categories[indexPath.section].trackers[indexPath.item]
         
@@ -289,5 +332,34 @@ extension TrackerViewController: TrackerCellDelegate {
         }
         
         collectionView.reloadItems(at: [indexPath])
+    }
+}
+
+extension TrackerViewController: HabitViewControllerDelegate {
+    
+    func didCreateTracker(_ tracker: Tracker, categoryName: String) {
+        
+        if let index = categories.firstIndex(where: { $0.heading == categoryName }) {
+            categories[index].trackers.append(tracker)
+        } else {
+            let category = TrackerCategory(
+                heading: categoryName,
+                trackers: [tracker]
+            )
+            categories.append(category)
+        }
+        
+        noTrackersImageView.isHidden = true
+        noTrackersQuestionLabel.isHidden = true
+        
+        reloadVisibleTrackers()
+        updatePlaceholderVisibility()
+    }
+}
+
+extension Date {
+    var weekday: WeekdaySchudele {
+        let weekday = Calendar.current.component(.weekday, from: self)
+        return WeekdaySchudele(rawValue: (weekday + 5) % 7) ?? .saturday
     }
 }

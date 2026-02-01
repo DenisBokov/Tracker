@@ -10,7 +10,7 @@ import Foundation
 enum TrackerColor: String {
     case red
     case blue
-    case green
+    case green = "SectionColorGreen"
 }
 
 enum WeekdaySchudele: Int, CaseIterable {

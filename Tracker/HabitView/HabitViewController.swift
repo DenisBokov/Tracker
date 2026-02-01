@@ -81,10 +81,18 @@ class HabitViewController: UIViewController {
         addTableViewOnView()
         addCancelButtonOnView()
         addSaveButtonOnView()
+        updateSaveButtonState()
     }
     
     @objc func addCancelAction() {
         dismiss(animated: true, completion: nil)
+    }
+    
+    private func updateSaveButtonState() {
+        let isEnabled = !selectedWeekdays.isEmpty
+
+        saveButton.isEnabled = isEnabled
+        saveButton.backgroundColor = isEnabled ? .ypBlack : .nameTrackerText
     }
     
     private func addTitleLabelOnView() {
@@ -206,5 +214,7 @@ extension HabitViewController: ScheduleViewControllerDelegate {
             at: [IndexPath(row: 1, section: 0)],
             with: .automatic
         )
+        
+        updateSaveButtonState()
     }
 }

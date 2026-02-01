@@ -7,17 +7,44 @@
 
 import UIKit
 
-final class ScheduleViewController:UIViewController {
+enum Weekday: Int, CaseIterable {
+    case monday, tuesday, wednesday, thursday, friday, saturday, sunday
     
-    let weakdays: [String] = [
-        "Понедельник",
-        "Вторник",
-        "Среда",
-        "Четверг",
-        "Пятница",
-        "Суббота",
-        "Воскресенье"
-    ]
+    var title: String {
+        switch self {
+        case .monday: return "Понедельник"
+        case .tuesday: return "Вторник"
+        case .wednesday: return "Среда"
+        case .thursday: return "Четверг"
+        case .friday: return "Пятница"
+        case .saturday: return "Суббота"
+        case .sunday: return "Воскресенье"
+        }
+    }
+    
+    var shortTitle: String {
+        switch self {
+        case .monday: return "Пн"
+        case .tuesday: return "Вт"
+        case .wednesday: return "Ср"
+        case .thursday: return "Чт"
+        case .friday: return "Пт"
+        case .saturday: return "Сб"
+        case .sunday: return "Вс"
+        }
+    }
+}
+    
+
+protocol ScheduleViewControllerDelegate: AnyObject {
+    func didSelectWeekdays(_ days: [Weekday])
+}
+
+final class ScheduleViewController: UIViewController {
+    
+    weak var delegate: ScheduleViewControllerDelegate?
+    
+    private var selectedWeekdays: Set<Weekday> = []
     
     private let titleLabel: UILabel = {
         let label = UILabel()
@@ -55,9 +82,16 @@ final class ScheduleViewController:UIViewController {
         tableView.dataSource = self
         tableView.delegate = self
         
+        saveScheduleButton.addTarget(self, action: #selector(saveTapped), for: .touchUpInside)
+        
         addTitleLabelOnView()
         addTableViewOnView()
         addSaveScheduleButtonOnView()
+    }
+    
+    @objc private func saveTapped() {
+        delegate?.didSelectWeekdays(Array(selectedWeekdays))
+        dismiss(animated: true)
     }
     
     private func addTitleLabelOnView() {
@@ -96,7 +130,7 @@ final class ScheduleViewController:UIViewController {
 
 extension ScheduleViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        weakdays.count
+        Weekday.allCases.count
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -104,27 +138,27 @@ extension ScheduleViewController: UITableViewDataSource, UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
         guard let cell = tableView.dequeueReusableCell(withIdentifier: ScheduleCell.reuseIdentifier, for: indexPath) as? ScheduleCell else {
             return UITableViewCell()
         }
         
-        switch indexPath.row {
-        case 0:
-            cell.configure(title: "Понедельник", showDivider: true)
-        case 1:
-            cell.configure(title: "Вторник", showDivider: true)
-        case 2:
-            cell.configure(title: "Понедельник", showDivider: true)
-        case 3:
-            cell.configure(title: "Вторник", showDivider: true)
-        case 4:
-            cell.configure(title: "Понедельник", showDivider: true)
-        case 5:
-            cell.configure(title: "Вторник", showDivider: true)
-        case 6:
-            cell.configure(title: "Понедельник", showDivider: false)
-        default:
-           break
+        let day = Weekday.allCases[indexPath.row]
+        
+        cell.configure(
+            title: day.title,
+            isOn: selectedWeekdays.contains(day),
+            showDivider: indexPath.row != Weekday.allCases.count - 1
+        )
+        
+        cell.onSwitchChanged = { [weak self] isOn in
+            guard let self else { return }
+            
+            if isOn {
+                self.selectedWeekdays.insert(day)
+            } else {
+                self.selectedWeekdays.remove(day)
+            }
         }
         
         return cell

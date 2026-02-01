@@ -33,6 +33,14 @@ final class HabitViewCell: UITableViewCell {
         return imageView
     }()
     
+    private let subtitleLabel: UILabel = {
+        let label = UILabel()
+        label.font = UIFont.systemFont(ofSize: 13)
+        label.textColor = .nameTrackerText
+        label.numberOfLines = 2
+        return label
+    }()
+    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
@@ -53,14 +61,21 @@ final class HabitViewCell: UITableViewCell {
         contentView.addSubview(titleLabel)
         contentView.addSubview(bottomDivider)
         contentView.addSubview(customAccessoryImage)
+        contentView.addSubview(subtitleLabel)
         
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         bottomDivider.translatesAutoresizingMaskIntoConstraints = false
         customAccessoryImage.translatesAutoresizingMaskIntoConstraints = false
+        subtitleLabel.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
             titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             titleLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            
+            subtitleLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 4),
+            subtitleLabel.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor),
+            subtitleLabel.trailingAnchor.constraint(equalTo: customAccessoryImage.leadingAnchor, constant: -8),
+            subtitleLabel.bottomAnchor.constraint(lessThanOrEqualTo: contentView.bottomAnchor, constant: -12),
             
             customAccessoryImage.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
             customAccessoryImage.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
@@ -74,8 +89,10 @@ final class HabitViewCell: UITableViewCell {
         ])
     }
     
-    func configure(title: String, showDivider: Bool) {
+    func configure(title: String, subtitle: String?, showDivider: Bool) {
         titleLabel.text = title
+        subtitleLabel.text = subtitle
+        subtitleLabel.isHidden = subtitle == nil
         bottomDivider.isHidden = !showDivider
     }
 }

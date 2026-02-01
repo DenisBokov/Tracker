@@ -8,8 +8,10 @@
 import UIKit
 
 class HabitViewController: UIViewController {
-    
+
     private let rows = ["Категория", "Расписание"]
+    
+    private var selectedWeekdays: [Weekday] = []
     
     private let titleLabel: UILabel = {
         let label = UILabel()
@@ -138,6 +140,7 @@ class HabitViewController: UIViewController {
     private func openScheduleViewController() {
         let vc = ScheduleViewController()
         vc.modalPresentationStyle = .pageSheet
+        vc.delegate = self
         
         if let sheet = vc.sheetPresentationController {
             sheet.detents = [.large()]
@@ -164,9 +167,11 @@ extension HabitViewController: UITableViewDataSource {
         
         switch indexPath.row {
         case 0:
-            cell.configure(title: "Категория", showDivider: true)
+            cell.configure(title: "Категория", subtitle: nil, showDivider: true)
         case 1:
-            cell.configure(title: "Расписание", showDivider: false)
+            let text = selectedWeekdays.map { $0.shortTitle }.joined(separator: ", ")
+            
+            cell.configure(title: "Расписание", subtitle: text, showDivider: false)
         default:
             break
         }
@@ -185,5 +190,15 @@ extension HabitViewController: UITableViewDelegate {
         default:
             break
         }
+    }
+}
+
+extension HabitViewController: ScheduleViewControllerDelegate {
+    func didSelectWeekdays(_ days: [Weekday]) {
+        selectedWeekdays = days.sorted { $0.rawValue < $1.rawValue }
+        tableView.reloadRows(
+            at: [IndexPath(row: 1, section: 0)],
+            with: .automatic
+        )
     }
 }

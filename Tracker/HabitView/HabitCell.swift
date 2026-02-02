@@ -35,10 +35,19 @@ final class HabitViewCell: UITableViewCell {
     
     private let subtitleLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 13)
+        label.font = UIFont(name: TrackerFont.regular.rawValue, size: 17)
         label.textColor = .nameTrackerText
         label.numberOfLines = 2
         return label
+    }()
+    
+    private let verticalStackView: UIStackView = {
+        let stack = UIStackView()
+        stack.axis = .vertical
+        stack.alignment = .leading
+        stack.distribution = .equalSpacing
+        stack.spacing = 2
+        return stack
     }()
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -58,25 +67,20 @@ final class HabitViewCell: UITableViewCell {
 
         selectionStyle = .none
         
-        contentView.addSubview(titleLabel)
         contentView.addSubview(bottomDivider)
         contentView.addSubview(customAccessoryImage)
-        contentView.addSubview(subtitleLabel)
         
-        titleLabel.translatesAutoresizingMaskIntoConstraints = false
+        contentView.addSubview(verticalStackView)
+        
+        verticalStackView.addArrangedSubview(titleLabel)
+        verticalStackView.addArrangedSubview(subtitleLabel)
+        
         bottomDivider.translatesAutoresizingMaskIntoConstraints = false
         customAccessoryImage.translatesAutoresizingMaskIntoConstraints = false
-        subtitleLabel.translatesAutoresizingMaskIntoConstraints = false
+        
+        verticalStackView.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
-            titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
-            titleLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
-            
-            subtitleLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 4),
-            subtitleLabel.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor),
-            subtitleLabel.trailingAnchor.constraint(equalTo: customAccessoryImage.leadingAnchor, constant: -8),
-            subtitleLabel.bottomAnchor.constraint(lessThanOrEqualTo: contentView.bottomAnchor, constant: -12),
-            
             customAccessoryImage.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
             customAccessoryImage.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
             customAccessoryImage.widthAnchor.constraint(equalToConstant: 24),
@@ -85,7 +89,13 @@ final class HabitViewCell: UITableViewCell {
             bottomDivider.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
             bottomDivider.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
             bottomDivider.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
-            bottomDivider.heightAnchor.constraint(equalToConstant: 0.5)
+            bottomDivider.heightAnchor.constraint(equalToConstant: 0.5),
+            
+            verticalStackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            verticalStackView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            verticalStackView.trailingAnchor.constraint(
+                lessThanOrEqualTo: customAccessoryImage.leadingAnchor,
+                constant: -8),
         ])
     }
     

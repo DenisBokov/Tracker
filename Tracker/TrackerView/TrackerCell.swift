@@ -35,14 +35,20 @@ final class TrackerCell: UICollectionViewCell {
     
     private let emojiLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 24)
+        label.font = .systemFont(ofSize: 16)
         label.textColor = .ypWhiteAndGrey
-        label.layer.borderWidth = 4
-        label.layer.borderColor = UIColor(resource: .ypWhiteAndGrey).cgColor
-        label.layer.cornerRadius = 12
         label.layer.masksToBounds = true
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
+    }()
+    
+    private let emojiCircleView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .ypWhiteAndGrey
+        view.layer.cornerRadius = 12
+        view.clipsToBounds = true
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
     }()
     
     private let titleLabel: UILabel = {
@@ -94,9 +100,10 @@ final class TrackerCell: UICollectionViewCell {
     private func setupViews() {
         
         contentView.addSubview(colorView)
-        contentView.addSubview(emojiLabel)
+        contentView.addSubview(emojiCircleView)
         contentView.addSubview(titleLabel)
         contentView.addSubview(quantityManagementView)
+        emojiCircleView.addSubview(emojiLabel)
         
         quantityManagementView.addSubview(quantityLabel)
         quantityManagementView.addSubview(quantityButton)
@@ -107,14 +114,17 @@ final class TrackerCell: UICollectionViewCell {
             colorView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             colorView.heightAnchor.constraint(equalToConstant: 90),
             
-            emojiLabel.topAnchor.constraint(equalTo: colorView.topAnchor, constant: 12),
-            emojiLabel.leadingAnchor.constraint(equalTo: colorView.leadingAnchor, constant: 12),
+            emojiCircleView.topAnchor.constraint(equalTo: colorView.topAnchor, constant: 12),
+            emojiCircleView.leadingAnchor.constraint(equalTo: colorView.leadingAnchor, constant: 12),
+            emojiCircleView.heightAnchor.constraint(equalToConstant: 24),
+            emojiCircleView.widthAnchor.constraint(equalToConstant: 24),
             
-            titleLabel.topAnchor.constraint(equalTo: emojiLabel.bottomAnchor, constant: 8),
+            emojiLabel.centerXAnchor.constraint(equalTo: emojiCircleView.centerXAnchor),
+            emojiLabel.centerYAnchor.constraint(equalTo: emojiCircleView.centerYAnchor),
+            
             titleLabel.leadingAnchor.constraint(equalTo: colorView.leadingAnchor, constant: 12),
             titleLabel.trailingAnchor.constraint(equalTo: colorView.trailingAnchor, constant: -12),
-            titleLabel.bottomAnchor.constraint(lessThanOrEqualTo: colorView.bottomAnchor, constant: 12),
-            titleLabel.heightAnchor.constraint(equalToConstant: 34),
+            titleLabel.bottomAnchor.constraint(lessThanOrEqualTo: colorView.bottomAnchor, constant: -12),
             
             quantityManagementView.topAnchor.constraint(equalTo: colorView.bottomAnchor),
             quantityManagementView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),

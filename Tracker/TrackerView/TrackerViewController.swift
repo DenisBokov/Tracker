@@ -38,7 +38,8 @@ final class TrackerViewController: UIViewController {
     
     var categories: [TrackerCategory] = []
     private var allCategories: [TrackerCategory] = []
-    var completedTrackers: [TrackerRecord] = []
+    private var completedTrackers: Set<TrackerRecord> = []
+    private var currentDate: Date = Date()
     
     private var isFutureDateSelected: Bool {
         Calendar.current.compare(
@@ -87,7 +88,6 @@ final class TrackerViewController: UIViewController {
         
         setupNoTrackersLabel()
         updatePlaceholderVisibility()
-        addTestData()
     }
     
     @objc func datePickerValueChanged(_ sender: UIDatePicker) {
@@ -95,6 +95,7 @@ final class TrackerViewController: UIViewController {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "dd.MM.yyyy"
         let formattedDate = dateFormatter.string(from: selectedDate)
+        currentDate = sender.date
         reloadVisibleTrackers()
         print("Выбранная дата: \(formattedDate)")
     }
@@ -118,24 +119,6 @@ final class TrackerViewController: UIViewController {
         navigationItem.hidesSearchBarWhenScrolling = false
         
         definesPresentationContext = true
-    }
-    
-    private func addTestData() {
-        let testTracker = Tracker(
-            id: UUID(),
-            name: "Полить цветы",
-            color: .green,
-            emoji: "🌱",
-            schedule: [.monday, .wednesday, .friday]
-        )
-        
-        let testCategory = TrackerCategory(
-            heading: "Домашний уют",
-            trackers: [testTracker]
-        )
-        
-        allCategories = [testCategory]
-        reloadVisibleTrackers()
     }
     
     private func addTrackerTapped() {
@@ -177,7 +160,7 @@ final class TrackerViewController: UIViewController {
             return
         }
         
-        let selectedWeekday = datePicker.date.weekday
+        let selectedWeekday = currentDate.weekday
         
         categories = allCategories.map { category in
             let filtered = category.trackers.filter {
@@ -272,7 +255,7 @@ extension TrackerViewController: UICollectionViewDataSource {
         let tracker = categories[indexPath.section].trackers[indexPath.item]
         
         let isComplitedToday = completedTrackers.contains { record in
-            record.trackerId == tracker.id && Calendar.current.isDateInToday(record.date ?? Date())
+            record.trackerId == tracker.id && Calendar.current.isDate(record.date, inSameDayAs: currentDate)
         }
         
         let completedCount = completedTrackers.filter { record in
@@ -320,15 +303,23 @@ extension TrackerViewController: TrackerCellDelegate {
         
         let today = Date()
         
-        if Calendar.current.compare(today, to: datePicker.date, toGranularity: .day) == .orderedAscending {
+        if Calendar.current.compare(today, to: currentDate, toGranularity: .day) == .orderedAscending {
             return
         }
         
-        if let index = completedTrackers.firstIndex(where: { $0.trackerId == tracker.id && Calendar.current.isDate($0.date ?? today, inSameDayAs: today) }) {
-            completedTrackers.remove(at: index)
+//        if let index = completedTrackers.firstIndex(where: { $0.trackerId == tracker.id && Calendar.current.isDate($0.date ?? today, inSameDayAs: today) }) {
+//            completedTrackers.remove(at: index)
+//        } else {
+//            let record = TrackerRecord(trackerId: tracker.id, date: today)
+//            completedTrackers.append(record)
+//        }
+        
+        let record = TrackerRecord(trackerId: tracker.id, date: currentDate)
+
+        if completedTrackers.contains(record) {
+            completedTrackers.remove(record)
         } else {
-            let record = TrackerRecord(trackerId: tracker.id, date: today)
-            completedTrackers.append(record)
+            completedTrackers.insert(record)
         }
         
         collectionView.reloadItems(at: [indexPath])
@@ -339,15 +330,38 @@ extension TrackerViewController: HabitViewControllerDelegate {
     
     func didCreateTracker(_ tracker: Tracker, categoryName: String) {
         
-        if let index = categories.firstIndex(where: { $0.heading == categoryName }) {
-            categories[index].trackers.append(tracker)
-        } else {
-            let category = TrackerCategory(
-                heading: categoryName,
-                trackers: [tracker]
-            )
-            categories.append(category)
-        }
+//        if let index = categories.firstIndex(where: { $0.heading == categoryName }) {
+//            categories[index].trackers.append(tracker)
+//        } else {
+//            let category = TrackerCategory(
+//                heading: categoryName,
+//                trackers: [tracker]
+//            )
+//            categories.append(category)
+//        }
+        
+        var newCategories: [TrackerCategory] = []
+        
+        if let category = allCategories.first(where: { $0.heading == categoryName }) {
+
+                let updatedCategory = TrackerCategory(
+                    heading: category.heading,
+                    trackers: category.trackers + [tracker]
+                )
+
+                newCategories = allCategories.map {
+                    $0.heading == categoryName ? updatedCategory : $0
+                }
+
+            } else {
+                let newCategory = TrackerCategory(
+                    heading: categoryName,
+                    trackers: [tracker]
+                )
+                newCategories = allCategories + [newCategory]
+            }
+
+            allCategories = newCategories
         
         noTrackersImageView.isHidden = true
         noTrackersQuestionLabel.isHidden = true

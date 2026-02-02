@@ -11,7 +11,7 @@ protocol HabitViewControllerDelegate: AnyObject {
     func didCreateTracker(_ tracker: Tracker, categoryName: String)
 }
 
-class HabitViewController: UIViewController {
+final class HabitViewController: UIViewController {
 
     private let rows = ["Категория", "Расписание"]
     
@@ -96,13 +96,13 @@ class HabitViewController: UIViewController {
         
         let tracker = Tracker(
             id: UUID(),
-            name: nameTrackerTextField.text ?? "Без названия",
+            name: "Полить растение",
             color: .green,
-            emoji: "🔥",
+            emoji: "😪",
             schedule: schedule
         )
 
-        delegate?.didCreateTracker(tracker, categoryName: "Моя категория")
+        delegate?.didCreateTracker(tracker, categoryName: "Домашний уют")
         dismiss(animated: true)
     }
     

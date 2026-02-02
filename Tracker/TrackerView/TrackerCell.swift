@@ -14,6 +14,7 @@ protocol TrackerCellDelegate: AnyObject {
 enum TrackerFont: String {
     case medium = "SFProDisplay-Medium"
     case bold = "SFProDisplay-Bold"
+    case regular = "SFProRounded-Regular"
 }
 
 final class TrackerCell: UICollectionViewCell {

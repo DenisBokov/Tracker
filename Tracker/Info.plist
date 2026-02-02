@@ -6,6 +6,7 @@
         <array>
              <string>SF-Pro-Display-Bold.otf</string>
              <string>SF-Pro-Display-Medium.otf</string>
+             <string>SF-Pro-Rounded-Regular.otf</string>
         </array>
 	<key>UIApplicationSceneManifest</key>
 	<dict>

@@ -13,7 +13,7 @@ final class HabitViewCell: UITableViewCell {
     
     private let titleLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont(name: TrackerFont.medium.rawValue, size: 17)
+        label.font = UIFont(name: TrackerFont.regular.rawValue, size: 17)
         label.textColor = .ypBlack
         return label
     }()

@@ -298,23 +298,18 @@ extension TrackerViewController: UICollectionViewDelegateFlowLayout {
 extension TrackerViewController: TrackerCellDelegate {
     
     func trackerCellDidTapQuantityButton(_ cell: TrackerCell) {
+        
         guard let indexPath = collectionView.indexPath(for: cell) else { return }
+        
         let tracker = categories[indexPath.section].trackers[indexPath.item]
         
-        let today = Date()
+        let selectedDate = currentDate
         
-        if Calendar.current.compare(today, to: currentDate, toGranularity: .day) == .orderedAscending {
+        if Calendar.current.compare(Date(), to: selectedDate, toGranularity: .day) == .orderedAscending {
             return
         }
         
-//        if let index = completedTrackers.firstIndex(where: { $0.trackerId == tracker.id && Calendar.current.isDate($0.date ?? today, inSameDayAs: today) }) {
-//            completedTrackers.remove(at: index)
-//        } else {
-//            let record = TrackerRecord(trackerId: tracker.id, date: today)
-//            completedTrackers.append(record)
-//        }
-        
-        let record = TrackerRecord(trackerId: tracker.id, date: currentDate)
+        let record = TrackerRecord(trackerId: tracker.id, date: selectedDate)
 
         if completedTrackers.contains(record) {
             completedTrackers.remove(record)

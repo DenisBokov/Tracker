@@ -34,7 +34,7 @@ final class HabitViewController: UIViewController {
         textField.textColor = .nameTrackerText
         textField.backgroundColor = .nameTrackerTextField
         textField.layer.cornerRadius = 16
-        
+        textField.returnKeyType = .done
         textField.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: 0))
             textField.leftViewMode = .always
         return textField
@@ -79,6 +79,7 @@ final class HabitViewController: UIViewController {
         tableView.register(HabitViewCell.self, forCellReuseIdentifier: HabitViewCell.reuseIdentifier)
         tableView.dataSource = self
         tableView.delegate = self
+        nameTrackerTextField.delegate = self
         
         cancelButton.addTarget(self, action: #selector(addCancelAction), for: .touchUpInside)
         saveButton.addTarget(self, action: #selector(saveTapped), for: .touchUpInside)
@@ -238,5 +239,12 @@ extension HabitViewController: ScheduleViewControllerDelegate {
         )
         
         updateSaveButtonState()
+    }
+}
+
+extension HabitViewController: UITextFieldDelegate {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
     }
 }

@@ -15,7 +15,7 @@ final class HabitViewController: UIViewController {
 
     private let rows = ["Категория", "Расписание"]
     
-    private var selectedWeekdays: [Weekday] = []
+    private var selectedWeekdays: [WeekdaySchedule] = []
     
     weak var delegate: HabitViewControllerDelegate?
     
@@ -92,7 +92,7 @@ final class HabitViewController: UIViewController {
     }
     
     @objc private func saveTapped() {
-        let schedule = Set(selectedWeekdays.compactMap { WeekdaySchudele(rawValue: $0.rawValue) })
+        let schedule = Set(selectedWeekdays.compactMap { Weekday(rawValue: $0.rawValue) })
         
         let tracker = Tracker(
             id: UUID(),
@@ -230,7 +230,7 @@ extension HabitViewController: UITableViewDelegate {
 }
 
 extension HabitViewController: ScheduleViewControllerDelegate {
-    func didSelectWeekdays(_ days: [Weekday]) {
+    func didSelectWeekdays(_ days: [WeekdaySchedule]) {
         selectedWeekdays = days.sorted { $0.rawValue < $1.rawValue }
         tableView.reloadRows(
             at: [IndexPath(row: 1, section: 0)],

@@ -13,7 +13,7 @@ enum TrackerColor: String {
     case green = "SectionColorGreen"
 }
 
-enum WeekdaySchudele: Int, CaseIterable {
+enum Weekday: Int, CaseIterable {
     case monday, tuesdays, wednesday, thursday, friday, saturday, sunday
 }
 
@@ -22,6 +22,6 @@ struct Tracker {
     let name: String
     let color: TrackerColor
     let emoji: String
-    let schedule: Set<WeekdaySchudele>
+    let schedule: Set<Weekday>
 }
 

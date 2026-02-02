@@ -36,7 +36,7 @@ final class TrackerViewController: UIViewController {
         return collectionView
     }()
     
-    var categories: [TrackerCategory] = []
+    private var categories: [TrackerCategory] = []
     private var allCategories: [TrackerCategory] = []
     private var completedTrackers: Set<TrackerRecord> = []
     private var currentDate: Date = Date()
@@ -325,16 +325,6 @@ extension TrackerViewController: HabitViewControllerDelegate {
     
     func didCreateTracker(_ tracker: Tracker, categoryName: String) {
         
-//        if let index = categories.firstIndex(where: { $0.heading == categoryName }) {
-//            categories[index].trackers.append(tracker)
-//        } else {
-//            let category = TrackerCategory(
-//                heading: categoryName,
-//                trackers: [tracker]
-//            )
-//            categories.append(category)
-//        }
-        
         var newCategories: [TrackerCategory] = []
         
         if let category = allCategories.first(where: { $0.heading == categoryName }) {
@@ -367,8 +357,8 @@ extension TrackerViewController: HabitViewControllerDelegate {
 }
 
 extension Date {
-    var weekday: WeekdaySchudele {
+    var weekday: Weekday {
         let weekday = Calendar.current.component(.weekday, from: self)
-        return WeekdaySchudele(rawValue: (weekday + 5) % 7) ?? .saturday
+        return Weekday(rawValue: (weekday + 5) % 7) ?? .saturday
     }
 }

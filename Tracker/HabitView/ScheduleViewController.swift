@@ -7,7 +7,7 @@
 
 import UIKit
 
-enum Weekday: Int, CaseIterable {
+enum WeekdaySchedule: Int, CaseIterable {
     case monday, tuesday, wednesday, thursday, friday, saturday, sunday
     
     var title: String {
@@ -36,14 +36,14 @@ enum Weekday: Int, CaseIterable {
 }
     
 protocol ScheduleViewControllerDelegate: AnyObject {
-    func didSelectWeekdays(_ days: [Weekday])
+    func didSelectWeekdays(_ days: [WeekdaySchedule])
 }
 
 final class ScheduleViewController: UIViewController {
     
     weak var delegate: ScheduleViewControllerDelegate?
     
-    private var selectedWeekdays: Set<Weekday> = []
+    private var selectedWeekdays: Set<WeekdaySchedule> = []
     
     private let titleLabel: UILabel = {
         let label = UILabel()
@@ -129,7 +129,7 @@ final class ScheduleViewController: UIViewController {
 
 extension ScheduleViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        Weekday.allCases.count
+        WeekdaySchedule.allCases.count
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -138,16 +138,19 @@ extension ScheduleViewController: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: ScheduleCell.reuseIdentifier, for: indexPath) as? ScheduleCell else {
+        guard let cell = tableView.dequeueReusableCell(
+            withIdentifier: ScheduleCell.reuseIdentifier,
+            for: indexPath) as? ScheduleCell
+        else {
             return UITableViewCell()
         }
         
-        let day = Weekday.allCases[indexPath.row]
+        let day = WeekdaySchedule.allCases[indexPath.row]
         
         cell.configure(
             title: day.title,
             isOn: selectedWeekdays.contains(day),
-            showDivider: indexPath.row != Weekday.allCases.count - 1
+            showDivider: indexPath.row != WeekdaySchedule.allCases.count - 1
         )
         
         cell.onSwitchChanged = { [weak self] isOn in

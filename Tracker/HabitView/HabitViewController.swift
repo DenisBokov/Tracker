@@ -186,6 +186,18 @@ final class HabitViewController: UIViewController {
         
         present(vc, animated: true)
     }
+    
+    private func openCategoryViewController() {
+        let vc = CategoryViewController()
+        vc.modalPresentationStyle = .pageSheet
+        
+        if let sheet = vc.sheetPresentationController {
+            sheet.detents = [.large()]
+            sheet.prefersGrabberVisible = true
+        }
+        
+        present(vc, animated: true)
+    }
 }
 
 extension HabitViewController: UITableViewDataSource {
@@ -221,7 +233,7 @@ extension HabitViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         switch indexPath.row {
         case 0:
-            openScheduleViewController()
+            openCategoryViewController()
         case 1:
             openScheduleViewController()
         default:

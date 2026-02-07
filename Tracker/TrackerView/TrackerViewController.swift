@@ -261,7 +261,13 @@ extension TrackerViewController: UICollectionViewDataSource {
             record.trackerId == tracker.id
         }.count
         
-        cell.configure(with: tracker, countDays: completedCount, isCompleted: isCompletedToday)
+        cell.configure(
+            with: tracker,
+            countDays: completedCount,
+            isCompleted: isCompletedToday,
+            isButtonEnabled: !isFutureDateSelected
+        )
+        
         cell.delegate = self
         
         return cell
@@ -304,7 +310,7 @@ extension TrackerViewController: TrackerCellDelegate {
         
         let selectedDate = currentDate
         
-        guard Calendar.current.compare(Date(), to: selectedDate, toGranularity: .day) == .orderedAscending else {
+        if Calendar.current.compare(Date(), to: selectedDate, toGranularity: .day) == .orderedAscending {
             return
         }
         

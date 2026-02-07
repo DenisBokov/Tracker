@@ -142,7 +142,7 @@ final class TrackerCell: UICollectionViewCell {
         ])
     }
     
-    func configure(with tracker: Tracker, countDays: Int, isCompleted: Bool) {
+    func configure(with tracker: Tracker, countDays: Int, isCompleted: Bool, isButtonEnabled: Bool) {
         titleLabel.text = tracker.name
         emojiLabel.text = tracker.emoji
 //        colorView.backgroundColor = tracker.color.uiColor
@@ -158,6 +158,15 @@ final class TrackerCell: UICollectionViewCell {
 //            quantityButton.backgroundColor = tracker.color.uiColor
 //            quantityButton.setTitleColor(.ypWhite, for: .normal)
 //        }
+        quantityButton.isEnabled = isButtonEnabled
+        
+        if isButtonEnabled {
+            quantityButton.backgroundColor = tracker.color.uiColor
+            quantityButton.alpha = 1
+        } else {
+            quantityButton.backgroundColor = tracker.color.uiColor
+            quantityButton.alpha = 0.4
+        }
         
         quantityButton.setTitle(isCompleted ? "✓" : "+", for: .normal)
         colorView.backgroundColor = isCompleted ? .completedCountButton : tracker.color.uiColor

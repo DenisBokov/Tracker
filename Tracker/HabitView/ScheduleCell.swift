@@ -13,7 +13,7 @@ final class ScheduleCell: UITableViewCell {
     
     var onSwitchChanged: ((Bool) -> Void)?
     
-    private let titleLabel: UILabel = {
+    private lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont(name: TrackerFont.medium.rawValue, size: 17)
         label.textColor = .ypBlack
@@ -26,7 +26,7 @@ final class ScheduleCell: UITableViewCell {
         return switchView
     }()
     
-    private let bottomDivider: UIView = {
+    private lazy var bottomDivider: UIView = {
         let view = UIView()
         view.backgroundColor = .nameTrackerText
         return view
@@ -38,8 +38,9 @@ final class ScheduleCell: UITableViewCell {
         addTableViewCell()
     }
     
+    @available(*, unavailable)
     required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        nil
     }
     
     @objc private func switchChanged() {

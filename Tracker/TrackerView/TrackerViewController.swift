@@ -122,7 +122,6 @@ final class TrackerViewController: UIViewController {
     }
     
     private func addTrackerTapped() {
-        print("Нажали +")
         
         let vc = HabitViewController()
         
@@ -153,12 +152,12 @@ final class TrackerViewController: UIViewController {
     }
     
     private func reloadVisibleTrackers() {
-        guard !isFutureDateSelected else {
-            categories = []
-            collectionView.reloadData()
-            updatePlaceholderVisibility()
-            return
-        }
+//        guard !isFutureDateSelected else {
+//            categories = []
+//            collectionView.reloadData()
+//            updatePlaceholderVisibility()
+//            return
+//        }
         
         let selectedWeekday = currentDate.weekday
         
@@ -254,7 +253,7 @@ extension TrackerViewController: UICollectionViewDataSource {
         
         let tracker = categories[indexPath.section].trackers[indexPath.item]
         
-        let isComplitedToday = completedTrackers.contains { record in
+        let isCompletedToday = completedTrackers.contains { record in
             record.trackerId == tracker.id && Calendar.current.isDate(record.date, inSameDayAs: currentDate)
         }
         
@@ -262,7 +261,7 @@ extension TrackerViewController: UICollectionViewDataSource {
             record.trackerId == tracker.id
         }.count
         
-        cell.configure(with: tracker, countDays: completedCount, isCompleted: isComplitedToday)
+        cell.configure(with: tracker, countDays: completedCount, isCompleted: isCompletedToday)
         cell.delegate = self
         
         return cell
@@ -305,7 +304,7 @@ extension TrackerViewController: TrackerCellDelegate {
         
         let selectedDate = currentDate
         
-        if Calendar.current.compare(Date(), to: selectedDate, toGranularity: .day) == .orderedAscending {
+        guard Calendar.current.compare(Date(), to: selectedDate, toGranularity: .day) == .orderedAscending else {
             return
         }
         

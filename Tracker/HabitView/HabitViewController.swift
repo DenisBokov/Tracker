@@ -95,19 +95,13 @@ final class HabitViewController: UIViewController {
     @objc private func saveTapped() {
         let schedule = Set(selectedWeekdays.compactMap { Weekday(rawValue: $0.rawValue) })
         
-        let tracker = Tracker(
-            id: UUID(),
-            name: "Полить растение",
-            color: .green,
-            emoji: "😪",
-            schedule: schedule
-        )
-
+        let tracker = MockData.makeTracker(schedule: schedule)
+        
         delegate?.didCreateTracker(tracker, categoryName: "Домашний уют")
         dismiss(animated: true)
     }
     
-    @objc func addCancelAction() {
+    @objc private func addCancelAction() {
         dismiss(animated: true, completion: nil)
     }
     

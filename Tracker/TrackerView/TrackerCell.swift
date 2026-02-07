@@ -11,11 +11,11 @@ protocol TrackerCellDelegate: AnyObject {
     func trackerCellDidTapQuantityButton(_ cell: TrackerCell)
 }
 
-enum TrackerFont: String {
-    case medium = "SFProDisplay-Medium"
-    case bold = "SFProDisplay-Bold"
-    case regular = "SFProRounded-Regular"
-}
+//enum TrackerFont: String {
+//    case medium = "SFProDisplay-Medium"
+//    case bold = "SFProDisplay-Bold"
+//    case regular = "SFProRounded-Regular"
+//}
 
 final class TrackerCell: UICollectionViewCell {
     
@@ -145,19 +145,26 @@ final class TrackerCell: UICollectionViewCell {
     func configure(with tracker: Tracker, countDays: Int, isCompleted: Bool) {
         titleLabel.text = tracker.name
         emojiLabel.text = tracker.emoji
-        colorView.backgroundColor = tracker.color.uiColor
-        quantityLabel.text = "\(countDays) дней"
+//        colorView.backgroundColor = tracker.color.uiColor
+//        quantityLabel.text = "\(countDays) дней"
+//        
+//        if isCompleted {
+//            quantityButton.setTitle("✓", for: .normal)
+//            quantityButton.backgroundColor = .completedCountButton
+//            quantityButton.setTitleColor(.ypWhite, for: .normal)
+//            quantityLabel.text = "\(countDays) день"
+//        } else {
+//            quantityButton.setTitle("+", for: .normal)
+//            quantityButton.backgroundColor = tracker.color.uiColor
+//            quantityButton.setTitleColor(.ypWhite, for: .normal)
+//        }
         
+        quantityButton.setTitle(isCompleted ? "✓" : "+", for: .normal)
+        colorView.backgroundColor = isCompleted ? .completedCountButton : tracker.color.uiColor
         if isCompleted {
-            quantityButton.setTitle("✓", for: .normal)
-            quantityButton.backgroundColor = .completedCountButton
-            quantityButton.setTitleColor(.ypWhite, for: .normal)
             quantityLabel.text = "\(countDays) день"
-        } else {
-            quantityButton.setTitle("+", for: .normal)
-            quantityButton.backgroundColor = tracker.color.uiColor
-            quantityButton.setTitleColor(.ypWhite, for: .normal)
         }
+        quantityButton.setTitleColor(.ypWhite, for: .normal)
         
         quantityButton.addTarget(self, action: #selector(quantityButtonTapped), for: .touchUpInside)
     }

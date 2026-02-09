@@ -58,9 +58,14 @@ final class HabitViewController: UIViewController {
     
     private let emojiCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
-        layout.scrollDirection = .horizontal
+        layout.sectionInset = UIEdgeInsets(top: 24, left: 18, bottom: 24, right: 19)
+        layout.minimumInteritemSpacing = 5
+        layout.minimumLineSpacing = 0
+        
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.backgroundColor = .clear
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
+        
         return collectionView
     }()
     
@@ -168,6 +173,16 @@ final class HabitViewController: UIViewController {
         NSLayoutConstraint.activate([
             emojiTitleLabel.topAnchor.constraint(equalTo: tableView.bottomAnchor, constant: 32),
             emojiTitleLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 28)
+        ])
+    }
+    
+    private func addEmojiCollectionViewOnView() {
+        view.addSubview(emojiCollectionView)
+        emojiCollectionView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            emojiCollectionView.topAnchor.constraint(equalTo: tableView.bottomAnchor, constant: 50),
+            emojiCollectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            emojiCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
         ])
     }
     

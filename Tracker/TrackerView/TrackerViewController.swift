@@ -152,12 +152,6 @@ final class TrackerViewController: UIViewController {
     }
     
     private func reloadVisibleTrackers() {
-//        guard !isFutureDateSelected else {
-//            categories = []
-//            collectionView.reloadData()
-//            updatePlaceholderVisibility()
-//            return
-//        }
         
         let selectedWeekday = currentDate.weekday
         

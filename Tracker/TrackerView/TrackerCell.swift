@@ -145,19 +145,7 @@ final class TrackerCell: UICollectionViewCell {
     func configure(with tracker: Tracker, countDays: Int, isCompleted: Bool, isButtonEnabled: Bool) {
         titleLabel.text = tracker.name
         emojiLabel.text = tracker.emoji
-//        colorView.backgroundColor = tracker.color.uiColor
-//        quantityLabel.text = "\(countDays) дней"
-//        
-//        if isCompleted {
-//            quantityButton.setTitle("✓", for: .normal)
-//            quantityButton.backgroundColor = .completedCountButton
-//            quantityButton.setTitleColor(.ypWhite, for: .normal)
-//            quantityLabel.text = "\(countDays) день"
-//        } else {
-//            quantityButton.setTitle("+", for: .normal)
-//            quantityButton.backgroundColor = tracker.color.uiColor
-//            quantityButton.setTitleColor(.ypWhite, for: .normal)
-//        }
+        
         quantityButton.isEnabled = isButtonEnabled
         
         if isButtonEnabled {

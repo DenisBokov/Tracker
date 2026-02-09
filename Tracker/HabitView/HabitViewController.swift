@@ -102,6 +102,14 @@ final class HabitViewController: UIViewController {
         tableView.delegate = self
         nameTrackerTextField.delegate = self
         
+        emojiCollectionView.register(
+            EmojiCell.self,
+            forCellWithReuseIdentifier: EmojiCell.reuseIdentifier
+        )
+
+        emojiCollectionView.dataSource = self
+        emojiCollectionView.delegate = self
+        
         cancelButton.addTarget(self, action: #selector(addCancelAction), for: .touchUpInside)
         saveButton.addTarget(self, action: #selector(saveTapped), for: .touchUpInside)
         
@@ -110,6 +118,7 @@ final class HabitViewController: UIViewController {
         addTableViewOnView()
         addCancelButtonOnView()
         addEmojiTitleLabelOnView()
+        addEmojiCollectionViewOnView()
         addSaveButtonOnView()
         updateSaveButtonState()
     }
@@ -180,9 +189,10 @@ final class HabitViewController: UIViewController {
         view.addSubview(emojiCollectionView)
         emojiCollectionView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            emojiCollectionView.topAnchor.constraint(equalTo: tableView.bottomAnchor, constant: 50),
+            emojiCollectionView.topAnchor.constraint(equalTo: emojiTitleLabel.bottomAnchor, constant: 5),
             emojiCollectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             emojiCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            emojiCollectionView.heightAnchor.constraint(equalToConstant: 204)
         ])
     }
     
@@ -293,5 +303,30 @@ extension HabitViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         return true
+    }
+}
+
+extension HabitViewController: UICollectionViewDataSource {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        18
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: EmojiCell.reuseIdentifier, for: indexPath) as? EmojiCell else {
+            return UICollectionViewCell()
+        }
+        
+        return cell
+    }
+}
+
+extension HabitViewController: UICollectionViewDelegateFlowLayout {
+    func collectionView(
+        _ collectionView: UICollectionView,
+        layout collectionViewLayout: UICollectionViewLayout,
+        sizeForItemAt indexPath: IndexPath
+    ) -> CGSize {
+        
+        CGSize(width: 52, height: 52)
     }
 }

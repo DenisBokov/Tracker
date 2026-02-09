@@ -48,6 +48,22 @@ final class HabitViewController: UIViewController {
         return tableView
     }()
     
+    private let emojiTitleLabel: UILabel = {
+        let label = UILabel()
+        label.text = "Emoji"
+        label.font = UIFont(name: TrackerFont.bold.rawValue, size: 19)
+        label.textColor = .ypBlack
+        return label
+    }()
+    
+    private let emojiCollectionView: UICollectionView = {
+        let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = .horizontal
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collectionView.backgroundColor = .clear
+        return collectionView
+    }()
+    
     private let cancelButton: UIButton = {
         let button = UIButton()
         button.setTitle("Отмена", for: .normal)
@@ -88,6 +104,7 @@ final class HabitViewController: UIViewController {
         addTextFieldOnView()
         addTableViewOnView()
         addCancelButtonOnView()
+        addEmojiTitleLabelOnView()
         addSaveButtonOnView()
         updateSaveButtonState()
     }
@@ -142,6 +159,15 @@ final class HabitViewController: UIViewController {
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
             tableView.heightAnchor.constraint(equalToConstant: 150)
+        ])
+    }
+    
+    private func addEmojiTitleLabelOnView() {
+        view.addSubview(emojiTitleLabel)
+        emojiTitleLabel.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            emojiTitleLabel.topAnchor.constraint(equalTo: tableView.bottomAnchor, constant: 32),
+            emojiTitleLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 28)
         ])
     }
     

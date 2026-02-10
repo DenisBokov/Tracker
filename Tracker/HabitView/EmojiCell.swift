@@ -12,7 +12,7 @@ final class EmojiCell: UICollectionViewCell {
     
     private let emojiView: UIView = {
         let view = UIView()
-        view.backgroundColor = .borderColorView
+//        view.backgroundColor = .borderColorView
         view.layer.cornerRadius = 16
         view.clipsToBounds = true
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -21,7 +21,6 @@ final class EmojiCell: UICollectionViewCell {
     
     private let emojiLabel: UILabel = {
         let label = UILabel()
-        label.text = "😀"
         label.font = .systemFont(ofSize: 32)
         label.textColor = .ypWhiteAndGrey
         label.layer.masksToBounds = true
@@ -53,5 +52,9 @@ final class EmojiCell: UICollectionViewCell {
             emojiLabel.centerXAnchor.constraint(equalTo: emojiView.centerXAnchor),
             emojiLabel.centerYAnchor.constraint(equalTo: emojiView.centerYAnchor)
         ])
+    }
+    
+    func configure(with emoji: String) {
+        emojiLabel.text = emoji
     }
 }

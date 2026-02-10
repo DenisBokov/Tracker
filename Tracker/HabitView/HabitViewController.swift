@@ -17,6 +17,12 @@ final class HabitViewController: UIViewController {
     
     private var selectedWeekdays: [WeekdaySchedule] = []
     
+    private let emojis = [
+        "🙂", "😻", "🌺", "🐶", "❤️", "😱",
+        "😇", "😡", "🥶", "🤔", "🙌", "🍔",
+        "🥦", "🏓", "🥇", "🎸", "🏝", "😪"
+    ]
+    
     weak var delegate: HabitViewControllerDelegate?
     
     private let scrollView = UIScrollView()
@@ -392,7 +398,7 @@ extension HabitViewController: UITextFieldDelegate {
 extension HabitViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if collectionView == emojiCollectionView {
-            return 18
+            return emojis.count
         } else if collectionView == colorCollectionView {
             return 18
         }
@@ -406,6 +412,7 @@ extension HabitViewController: UICollectionViewDataSource {
                 return UICollectionViewCell()
             }
             
+            cell.configure(with: emojis[indexPath.item])
             return cell
         } else {
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ColorCell.reuseIdentifier, for: indexPath) as? ColorCell else {

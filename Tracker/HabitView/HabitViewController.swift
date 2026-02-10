@@ -56,7 +56,28 @@ final class HabitViewController: UIViewController {
         return label
     }()
     
+    private let colorTitleLabel: UILabel = {
+        let label = UILabel()
+        label.text = "Цвет"
+        label.font = UIFont(name: TrackerFont.bold.rawValue, size: 19)
+        label.textColor = .ypBlack
+        return label
+    }()
+    
     private let emojiCollectionView: UICollectionView = {
+        let layout = UICollectionViewFlowLayout()
+        layout.sectionInset = UIEdgeInsets(top: 24, left: 18, bottom: 24, right: 19)
+        layout.minimumInteritemSpacing = 5
+        layout.minimumLineSpacing = 0
+        
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collectionView.backgroundColor = .clear
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
+        
+        return collectionView
+    }()
+    
+    private let colorCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.sectionInset = UIEdgeInsets(top: 24, left: 18, bottom: 24, right: 19)
         layout.minimumInteritemSpacing = 5
@@ -106,6 +127,14 @@ final class HabitViewController: UIViewController {
             EmojiCell.self,
             forCellWithReuseIdentifier: EmojiCell.reuseIdentifier
         )
+        
+        colorCollectionView.register(
+            ColorCell.self,
+            forCellWithReuseIdentifier: ColorCell.reuseIdentifier
+        )
+
+        colorCollectionView.dataSource = self
+        colorCollectionView.delegate = self
 
         emojiCollectionView.dataSource = self
         emojiCollectionView.delegate = self
@@ -119,6 +148,8 @@ final class HabitViewController: UIViewController {
         addCancelButtonOnView()
         addEmojiTitleLabelOnView()
         addEmojiCollectionViewOnView()
+        addColorTitleLabelOnView()
+        addColorCollectionViewOnView()
         addSaveButtonOnView()
         updateSaveButtonState()
     }
@@ -193,6 +224,26 @@ final class HabitViewController: UIViewController {
             emojiCollectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             emojiCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             emojiCollectionView.heightAnchor.constraint(equalToConstant: 204)
+        ])
+    }
+    
+    private func addColorTitleLabelOnView() {
+        view.addSubview(colorTitleLabel)
+        colorTitleLabel.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            colorTitleLabel.topAnchor.constraint(equalTo: emojiCollectionView.bottomAnchor, constant: 16),
+            colorTitleLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 28)
+        ])
+    }
+    
+    private func addColorCollectionViewOnView() {
+        view.addSubview(colorCollectionView)
+        colorCollectionView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            colorCollectionView.topAnchor.constraint(equalTo: colorTitleLabel.bottomAnchor, constant: 5),
+            colorCollectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            colorCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            colorCollectionView.heightAnchor.constraint(equalToConstant: 204)
         ])
     }
     
@@ -308,15 +359,32 @@ extension HabitViewController: UITextFieldDelegate {
 
 extension HabitViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        18
+        if collectionView == emojiCollectionView {
+            return 18
+        } else if collectionView == colorCollectionView {
+            return 18
+        }
+        return 0
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: EmojiCell.reuseIdentifier, for: indexPath) as? EmojiCell else {
-            return UICollectionViewCell()
-        }
+//        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: EmojiCell.reuseIdentifier, for: indexPath) as? EmojiCell else {
+//            return UICollectionViewCell()
+//        }
         
-        return cell
+        if collectionView == emojiCollectionView {
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: EmojiCell.reuseIdentifier, for: indexPath) as? EmojiCell else {
+                return UICollectionViewCell()
+            }
+            
+            return cell
+        } else {
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ColorCell.reuseIdentifier, for: indexPath) as? ColorCell else {
+                return UICollectionViewCell()
+            }
+            
+            return cell
+        }
     }
 }
 

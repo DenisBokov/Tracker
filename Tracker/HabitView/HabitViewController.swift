@@ -23,6 +23,15 @@ final class HabitViewController: UIViewController {
         "🥦", "🏓", "🥇", "🎸", "🏝", "😪"
     ]
     
+    private let colors: [UIColor] = [
+        .trackerBlue, .trackerBluePurple, .trackerCoral,
+        .trackerDarkOrange, .trackerDarkPurple, .trackerGreen,
+        .trackerLightBlue,.trackerLightGreen, .trackerLightOrange,
+        .trackerLightPink, .trackerLilac, .trackerLimeGreen,
+        .trackerOrange, .trackerOrchid, .trackerPink,
+        .trackerSlateBlue, .trackerViolet, .trackerRed
+    ]
+    
     weak var delegate: HabitViewControllerDelegate?
     
     private let scrollView = UIScrollView()
@@ -400,7 +409,7 @@ extension HabitViewController: UICollectionViewDataSource {
         if collectionView == emojiCollectionView {
             return emojis.count
         } else if collectionView == colorCollectionView {
-            return 18
+            return colors.count
         }
         return 0
     }
@@ -419,6 +428,7 @@ extension HabitViewController: UICollectionViewDataSource {
                 return UICollectionViewCell()
             }
             
+            cell.configure(with: colors[indexPath.item])
             return cell
         }
     }

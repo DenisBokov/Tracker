@@ -11,12 +11,18 @@ final class ColorCell: UICollectionViewCell {
     
     static let reuseIdentifier: String = "ColorCell"
     
+    override var isSelected: Bool {
+        didSet {
+            borderColorView.layer.borderWidth = isSelected ? 2 : 0
+        }
+    }
+    
     private let borderColorView: UIView = {
         let view = UIView()
         view.backgroundColor = .ypWhite
-//        view.layer.borderColor = UIColor(resource: .borderColorView).cgColor
-//        view.layer.borderWidth = 2
-//        view.layer.cornerRadius = 16
+        view.layer.borderColor = UIColor(resource: .borderColorView).cgColor
+        view.layer.borderWidth = 0
+        view.layer.cornerRadius = 16
         view.clipsToBounds = true
         view.translatesAutoresizingMaskIntoConstraints = false
         return view

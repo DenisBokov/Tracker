@@ -10,9 +10,14 @@ import UIKit
 final class EmojiCell: UICollectionViewCell {
     static let reuseIdentifier: String = "EmojiCell"
     
+    override var isSelected: Bool {
+        didSet {
+            emojiView.backgroundColor = isSelected ? .borderColorView : .ypWhite
+        }
+    }
+    
     private let emojiView: UIView = {
         let view = UIView()
-//        view.backgroundColor = .borderColorView
         view.layer.cornerRadius = 16
         view.clipsToBounds = true
         view.translatesAutoresizingMaskIntoConstraints = false

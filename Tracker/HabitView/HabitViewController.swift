@@ -157,6 +157,9 @@ final class HabitViewController: UIViewController {
         emojiCollectionView.dataSource = self
         emojiCollectionView.delegate = self
         
+        emojiCollectionView.allowsMultipleSelection = false
+        colorCollectionView.allowsMultipleSelection = false
+        
         cancelButton.addTarget(self, action: #selector(addCancelAction), for: .touchUpInside)
         saveButton.addTarget(self, action: #selector(saveTapped), for: .touchUpInside)
         

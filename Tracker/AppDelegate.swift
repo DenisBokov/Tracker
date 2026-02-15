@@ -11,6 +11,10 @@ import UIKit
 final class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        
+        // Зарегистрировать трансформер, что бы CoreData его использовала
+        WeekdaySetValueTransformer.register()
+        
         return true
     }
 

@@ -35,7 +35,7 @@ enum TrackerColor: String, CaseIterable, Codable {
     case trackerRed
 }
 
-enum Weekday: Int, CaseIterable {
+enum Weekday: Int, CaseIterable, Codable {
     case monday, tuesdays, wednesday, thursday, friday, saturday, sunday
 }
 

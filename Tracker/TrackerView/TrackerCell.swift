@@ -149,15 +149,15 @@ final class TrackerCell: UICollectionViewCell {
         quantityButton.isEnabled = isButtonEnabled
         
         if isButtonEnabled {
-            quantityButton.backgroundColor = tracker.color.uiColor
+            quantityButton.backgroundColor = tracker.color.trackerUiColor
             quantityButton.alpha = 1
         } else {
-            quantityButton.backgroundColor = tracker.color.uiColor
+            quantityButton.backgroundColor = tracker.color.trackerUiColor
             quantityButton.alpha = 0.4
         }
         
         quantityButton.setTitle(isCompleted ? "✓" : "+", for: .normal)
-        colorView.backgroundColor = isCompleted ? .completedCountButton : tracker.color.uiColor
+        colorView.backgroundColor = isCompleted ? .completedCountButton : tracker.color.trackerUiColor
         if isCompleted {
             quantityLabel.text = "\(countDays) день"
         }
@@ -171,12 +171,12 @@ final class TrackerCell: UICollectionViewCell {
     }
 }
 
-extension TrackerColor {
-    var uiColor: UIColor {
-        switch self {
-        case .red: return .systemRed
-        case .blue: return .systemBlue
-        case .green: return .sectionColorGreen
-        }
-    }
-}
+//extension TrackerColor {
+//    var uiColor: UIColor {
+//        switch self {
+//        case .red: return .systemRed
+//        case .blue: return .systemBlue
+//        case .green: return .sectionColorGreen
+//        }
+//    }
+//}

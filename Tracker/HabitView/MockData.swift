@@ -12,7 +12,7 @@ enum MockData {
         Tracker(
             id: UUID(),
             name: "Полить растение",
-            color: .green,
+            color: TrackerColor.trackerGreen,
             emoji: "😪",
             schedule: schedule
         )

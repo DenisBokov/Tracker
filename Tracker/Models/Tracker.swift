@@ -7,10 +7,32 @@
 
 import Foundation
 
-enum TrackerColor: String {
-    case red
-    case blue
-    case green = "SectionColorGreen"
+//enum TrackerColor: String {
+//    case red
+//    case blue
+//    case green = "SectionColorGreen"
+//}
+
+enum TrackerColor: String, CaseIterable, Codable {
+
+    case trackerBlue
+    case trackerBluePurple
+    case trackerCoral
+    case trackerDarkOrange
+    case trackerDarkPurple
+    case trackerGreen
+    case trackerLightBlue
+    case trackerLightGreen
+    case trackerLightOrange
+    case trackerLightPink
+    case trackerLilac
+    case trackerLimeGreen
+    case trackerOrange
+    case trackerOrchid
+    case trackerPink
+    case trackerSlateBlue
+    case trackerViolet
+    case trackerRed
 }
 
 enum Weekday: Int, CaseIterable {

@@ -23,15 +23,6 @@ final class HabitViewController: UIViewController {
         "🥦", "🏓", "🥇", "🎸", "🏝", "😪"
     ]
     
-//    private let colors: [UIColor] = [
-//        .trackerBlue, .trackerBluePurple, .trackerCoral,
-//        .trackerDarkOrange, .trackerDarkPurple, .trackerGreen,
-//        .trackerLightBlue,.trackerLightGreen, .trackerLightOrange,
-//        .trackerLightPink, .trackerLilac, .trackerLimeGreen,
-//        .trackerOrange, .trackerOrchid, .trackerPink,
-//        .trackerSlateBlue, .trackerViolet, .trackerRed
-//    ]
-    
     private let colors = TrackerColor.allCases
     
     weak var delegate: HabitViewControllerDelegate?

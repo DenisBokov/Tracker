@@ -12,7 +12,7 @@ final class StorageManager {
     
     static let shared = StorageManager()
     
-    lazy var persistentContainer: NSPersistentContainer = {
+    var persistentContainer: NSPersistentContainer = {
         let container = NSPersistentContainer(name: "Tracker")
         container.loadPersistentStores(completionHandler: { (storeDescription, error) in
             if let error = error as NSError? {
@@ -30,6 +30,7 @@ final class StorageManager {
                 try context.save()
             } catch {
                 let nserror = error as NSError
+                context.rollback()
                 assertionFailure("Unresolved error \(nserror), \(nserror.userInfo)")
             }
         }
